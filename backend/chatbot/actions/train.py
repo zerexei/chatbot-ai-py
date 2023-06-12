@@ -21,32 +21,25 @@ class BotModel:
 
     def train(self):
         intents = self._get_intents()
+        pickle.dump(intents, open('intents.pkl', 'wb'))
+
         words, classes, documents = self._process_intents(intents)
+
         words = self._lemmatize(words)
-        
         words = sorted(list(set(words)))
-        with open('words.pkl', 'wb') as handle:
-            pickle.dump(words, handle, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(words, open('words.pkl', 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
 
         classes = sorted(list(set(classes)))
-        with open('classes.pkl', 'wb') as ecn_file:
-            pickle.dump(classes, ecn_file, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(classes, open('classes.pkl', 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
 
         train_x, train_y, input_size, output_size = self._create_training_data(words, classes, documents)
         self._train(train_x, train_y,input_size, output_size)
-        
        
-
-    def getProps(self):
-        return f"epochs: {self.epochs} - batch size: {self.batch_size}"
-
     def _get_intents(self):
         intents_path = os.path.join(settings.BASE_DIR, 'chatbot/intents.json')
 
         try:
-            with open(intents_path, 'r') as file:
-                content = json.load(file)
-            return content
+            return json.load(open(intents_path, 'r'))
         except (FileNotFoundError, IOError):
             self.logger.error('File not found.')
 
@@ -74,7 +67,6 @@ class BotModel:
     # TODO: refactor: bag, matrix variable name
     def _create_training_data(self, words, classes, documents):
         training = []
-        matrix = [0] * len(classes)
 
 
         for doc in documents:
@@ -84,6 +76,7 @@ class BotModel:
             for w in words:
                 bag.append(1) if w in pattern_words else bag.append(0)
 
+            matrix = list([0] * len(classes))       
             matrix[classes.index(doc[1])] = 1
             training.append([bag, matrix])
 
@@ -116,8 +109,8 @@ class BotModel:
         model.add(Dropout(0.5))
         model.add(Dense(output_size, activation='softmax'))
 
+
         model.compile(
-            optimizer='adam',
             loss='categorical_crossentropy',
             metrics=['accuracy']
         )
@@ -131,8 +124,9 @@ class BotModel:
             batch_size=self.batch_size, 
             verbose=True
         )
-        
-        model.save('chatbot_model.h5', history)
+
+        # Save the model in the same folder
+        pickle.dump(model, open('model.pkl', 'wb'))
 
         end_time = time.time()
 
