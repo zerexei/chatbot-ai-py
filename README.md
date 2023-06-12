@@ -15,4 +15,7 @@ python manage.py migrate
 
 # create user w/ admin permissions
 python manage.py createsuperuser
+
+# run django server
+python manage.py runserver
 ```
