@@ -1,0 +1,40 @@
+[
+    {
+        "tag": "greeting",
+        "patterns": [
+            "greetings",
+            "hi there",
+            "hello there",
+            "hey there"
+        ],
+        "responses": [
+            "Hi there, welcome to [Chatbot-AI]! How may I assist you today?",
+            "Hello, welcome to [Chatbot-AI]! What brings you here today?",
+            "Hi, welcome to [Chatbot-AI]! How may I be of service today?"
+        ]
+    },
+    {
+        "tag": "goodbye",
+        "patterns": [
+            "good bye",
+            "bye",
+            "see you later"
+        ],
+        "responses": [
+            "Have a great day! Goodbye!",
+            "Until next time. Goodbye!",
+            "Take care. Goodbye!"
+        ]
+    },
+    {
+        "tag": "unknown",
+        "patterns": [
+            ""
+        ],
+        "responses": [
+            "What does that mean?",
+            "I do not understand...",
+            "I didn't get that quite right."
+        ]
+    }
+]
